@@ -1,36 +1,45 @@
 import PySimpleGUI as sg
 
-sg.theme('Dark Blue 3')
+ROW_SIZE = (15, 1)
 
-SIZE = (15, 1)
 
-layout = [
-            [sg.Text('Welcome to barrnap')],
-            [sg.Text('Input file path', size=SIZE), sg.InputText('file.fasta', key='-INPUT_FILE-'), sg.FileBrowse()],
-            [sg.Text('Kingdom', size=SIZE), sg.InputText('bac', key='-KINGDOM-')],
-            [sg.Text('Threads', size=SIZE), sg.InputText('1', key='-THREADS-')],
-            [sg.Text('Lencutoff', size=SIZE), sg.InputText('0.8', key='-LENCUTOFF-')],
-            [sg.Text('Reject', size=SIZE), sg.InputText('0.25', key='-REJECT-')],
-            [sg.Text('Evalue', size=SIZE), sg.InputText('1e-06', key='-EVALUE-')],
-            [sg.Text('Typed command:', size=SIZE), sg.InputText(key='-OUTPUT-')],
-            [sg.Submit(), sg.Cancel()]
-            ]
+def add_option(option, default=None, size=ROW_SIZE):
+    return [sg.Text(option, size=size), sg.InputText(default, key=f'-{option.upper()}-')]
 
-window = sg.Window('GUI barrnap application', layout)
 
-while True:
-    event, values = window.read()
-    print(event, values)
-    if event == sg.WIN_CLOSED or event == 'Cancel':
-        break
-    if event == 'Submit':
-        input_file = f"{values['-INPUT_FILE-']}"
-        kingdom = f"--kingdom {values['-KINGDOM-']}"
-        threads = f"--threads {values['-THREADS-']}"
-        lencutoff = f"--lencutoff {values['-LENCUTOFF-']}"
-        reject = f"--reject {values['-REJECT-']}"
-        evalue = f"--evalue {values['-EVALUE-']}"
-        command = f"barrnap {kingdom} {threads} {lencutoff} {reject} {evalue} {input_file}"
-        window['-OUTPUT-'].update(command)
+def add_input_file(file_path='file.fasta', size=ROW_SIZE):
+    return [sg.Text('Input file path', size=size), sg.InputText(file_path, key='-INPUT_FILE-'), sg.FileBrowse()]
 
-window.close()
+
+def main():
+    sg.theme('Dark Blue 3')
+
+    options_dic = {'Kingdom': 'bac', 'Threads': '1', 'Lencutoff': '0.8', 'Reject': '0.25', 'Evalue': '1e-06'}
+
+    layout = [[sg.Text('Welcome to barrnap')], add_input_file()]
+    layout.extend([add_option(*option) for option in options_dic.items()])
+    layout.extend([[sg.Text('Typed command', size=ROW_SIZE), sg.InputText(key='-OUTPUT-')], [sg.Submit(), sg.Cancel()]])
+
+    window = sg.Window('GUI barrnap application', layout, finalize=True)
+
+    while True:
+        event, values = window.read()
+        if event in {sg.WIN_CLOSED, 'Cancel'}:
+            break
+        if event == 'Submit':
+            command = ['barrnap']
+            for option in options_dic:
+                command.append(f"--{option.lower()} {values[f'-{option.upper()}-']}")
+            command.append(f"{values['-INPUT_FILE-']}")
+            command = ' '.join(command)
+
+            window['-OUTPUT-'].update(command)
+            print(command)
+
+    window.close()
+    del window
+    return command
+
+
+if __name__ == "__main__":
+    main()
