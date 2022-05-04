@@ -42,7 +42,7 @@ def main():
     
     comm = [arg.replace('--', '') for arg in arg_list]
     #print(comm)
-    stream = subprocess.Popen(comm, stdout=subprocess.PIPE, encoding='utf-8')
+    stream = subprocess.Popen(comm, stdout=subprocess.PIPE, shell=True, encoding='utf-8')
     out = stream.stdout.read()
 
     layout = [[(sg.Text('Barrnap output', size=[40, 1]))],
