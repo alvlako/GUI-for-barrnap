@@ -26,6 +26,37 @@ def add_file(text, file_path=None, key=None, size=ROW_SIZE):
     return [sg.Text(text, size=size), sg.InputText(file_path, key=key), sg.FileBrowse()]
 
 
+def show_help_page():
+    help_message = '''
+    BAsic Rapid Ribosomal RNA Predictor
+
+    Barrnap predicts the location of ribosomal RNA genes in genomes. 
+    It supports bacteria (5S,23S,16S), archaea (5S,5.8S,23S,16S), metazoan mitochondria (12S,16S) and eukaryotes (5S,5.8S,28S,18S).
+    It takes FASTA DNA sequence as input, and write GFF3 as output. 
+    It uses the new nhmmer tool that comes with HMMER 3.1 for HMM searching in RNA:DNA style. 
+    Multithreading is supported and one can expect roughly linear speed-ups with more CPUs.
+
+    Search
+    --kingdom is the database to use: Bacteria:bac, Archaea:arc, Eukaryota:euk, Metazoan Mitochondria:mito
+    --threads is how many CPUs to assign to nhmmer search
+    --evalue is the cut-off for nhmmer reporting, before further scrutiny
+    --lencutoff is the proportion of the full length that qualifies as partial match
+    --reject will not include hits below this proportion of the expected length
+
+    If you use Barrnap in your work, please cite:
+
+    Seemann T
+    barrnap 0.9 : rapid ribosomal RNA prediction
+    https://github.com/tseemann/barrnap
+
+    Graphical user interface (GUI) for Barrnap was created as Bioinformatics Institute student project
+    https://github.com/alvlako/GUI-for-barrnap
+
+    Thank you and wellcome to Barrnap GUI!.
+    '''
+    return help_message
+
+
 def main():
     sg.theme('Dark Blue 3')
 
@@ -33,15 +64,40 @@ def main():
 
     layout_input = [[sg.Text('Welcome to barrnap')], add_file('Input file path', 'sequence.fasta', '-INPUT_FILE-')]
     layout_input.extend([add_option(*option) for option in options_dic.items()])
-    layout_input.extend([[sg.Text('Typed command', size=ROW_SIZE), sg.InputText(key='-OUTPUT-')], [sg.Submit(), sg.Cancel()]])
+    layout_input.extend([[sg.Text('Typed command', size=ROW_SIZE), sg.InputText(key='-OUTPUT-')], [sg.Submit(), sg.Cancel(),
+                          sg.Button('HELP', button_color=(sg.YELLOWS[0], sg.BLUES[0]))]])
 
     window_input = sg.Window('GUI barrnap application', layout_input, finalize=True)
     window_output_active = False
+    window_help_active = False
 
     while True:
         event_input, values_input = window_input.read(timeout=100)
         if event_input in {sg.WIN_CLOSED, 'Cancel'}:
             break
+
+        if not window_help_active and event_input == 'HELP':
+            window_help_active = True
+            help_page = show_help_page()
+            #print(help_page)
+            layout_help = [[(sg.Text('Barrnap help page', size=[40, 1]))],
+                            [sg.Multiline(help_page, size=(80, 20))],
+                            [sg.Text('Output file path', size=(20,1)), sg.InputText('barrnap_help.txt', key='-HELP_PAGE-'), sg.FileBrowse(),
+                            sg.Button('SAVE', button_color=(sg.YELLOWS[0], sg.BLUES[0])),
+                            sg.Button('EXIT', button_color=(sg.YELLOWS[0], sg.GREENS[0]))]]
+
+            window_help = sg.Window('GUI barrnap application help page', layout_help, default_element_size=(30, 2))
+
+            while window_help_active:
+                event_help, values_help  = window_help.read()
+                if event_help == 'SAVE':
+                    with open(f"{values_help['-HELP_PAGE-']}", 'w') as help_file:
+                        help_file.write(help_page)
+                elif event_help in {sg.WIN_CLOSED, 'EXIT'}:
+                    window_help_active = False
+                    break
+            window_help.close()
+            del window_help
 
         if not window_output_active and event_input == 'Submit':
             if not os.path.exists(values_input['-INPUT_FILE-']):
@@ -70,7 +126,7 @@ def main():
                                 sg.Button('SAVE', button_color=(sg.YELLOWS[0], sg.BLUES[0])),
                                 sg.Button('EXIT', button_color=(sg.YELLOWS[0], sg.GREENS[0]))]]
 
-                window_output = sg.Window('GUI barrnap application', layout_output, default_element_size=(30, 2))
+                window_output = sg.Window('GUI barrnap application results', layout_output, default_element_size=(30, 2))
 
                 while window_output_active:
                     event_output, values_output  = window_output.read()
