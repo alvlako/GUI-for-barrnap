@@ -1,4 +1,3 @@
-#import PySimpleGUI as sg
 import subprocess
 import os.path
 
@@ -16,6 +15,15 @@ except ImportError:
     install('pysimplegui')
 finally:
     import PySimpleGUI as sg
+
+
+try:
+    barrnap_app = subprocess.Popen(['barrnap', '-h'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='utf-8')
+except FileNotFoundError:
+    #subprocess.call(['yes','|','conda', 'install', '-c', 'bioconda', '-c', 'conda-forge', 'phispy'])
+    ps = subprocess.Popen(('yes'), stdout=subprocess.PIPE)
+    output = subprocess.check_output(('conda', 'install', '-c', 'bioconda', '-c', 'conda-forge', 'barrnap'), stdin=ps.stdout)
+    ps.wait()
 
 
 def add_option(option, default=None, size=ROW_SIZE):
@@ -114,8 +122,6 @@ def main():
                 command = ' '.join(command)
 
                 window_input['-OUTPUT-'].update(command)
-
-                comm = [arg.replace('--', '') for arg in arg_list]
 
                 stream = subprocess.Popen(arg_list, stdout=subprocess.PIPE, encoding='utf-8')
                 out = stream.stdout.read()
