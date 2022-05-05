@@ -14,7 +14,6 @@ def add_file(text, file_path=None, key=None, size=ROW_SIZE):
 
 
 def install(package):
-    #subprocess.check_call([sys.executable, "pip", "install", package])
     subprocess.call(['pip', 'install', package])
     print('Required packages are installed')
 
