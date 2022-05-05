@@ -52,7 +52,8 @@ def main():
                 command = ['barrnap']
                 command.append(f"{values_input['-INPUT_FILE-']}")
                 for option in options_dic:
-                    command.append(f"--{option.lower()} {values_input[f'-{option.upper()}-']}")
+                    command.append(f"--{option.lower()}")
+                    command.append(f"{values[f'-{option.upper()}-']}")
                 arg_list = command
                 command = ' '.join(command)
 
@@ -60,7 +61,7 @@ def main():
 
                 comm = [arg.replace('--', '') for arg in arg_list]
 
-                stream = subprocess.Popen(comm, stdout=subprocess.PIPE, encoding='utf-8')
+                stream = subprocess.Popen(arg_list, stdout=subprocess.PIPE, encoding='utf-8')
                 out = stream.stdout.read()
 
                 layout_output = [[(sg.Text('Barrnap output', size=[40, 1]))],
