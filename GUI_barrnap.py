@@ -53,7 +53,7 @@ def main():
                 command.append(f"{values_input['-INPUT_FILE-']}")
                 for option in options_dic:
                     command.append(f"--{option.lower()}")
-                    command.append(f"{values[f'-{option.upper()}-']}")
+                    command.append(f"{values_input[f'-{option.upper()}-']}")
                 arg_list = command
                 command = ' '.join(command)
 
