@@ -1,7 +1,7 @@
 import subprocess
 import os.path
 
-ROW_SIZE = (15, 1)
+ROW_SIZE = (60, 1)
 
 
 def install(package):
@@ -70,7 +70,8 @@ def main():
 
     options_dic = {'Kingdom': 'bac', 'Threads': '1', 'Lencutoff': '0.8', 'Reject': '0.25', 'Evalue': '1e-06'}
 
-    layout_input = [[sg.Text('Welcome to barrnap')], add_file('Input file path', 'sequence.fasta', '-INPUT_FILE-')]
+    layout_input = [[sg.Text('Welcome to barrnap', font='Courier 400 italic bold underline overstrike')], add_file('Input file path', 'sequence.fasta', '-INPUT_FILE-'),
+                    add_file('Output FASTA file path', 'rRNA.fasta', '-OUTPUT_FASTA_FILE-')]
     layout_input.extend([add_option(*option) for option in options_dic.items()])
     layout_input.extend([[sg.Text('Typed command', size=ROW_SIZE), sg.InputText(key='-OUTPUT-')], [sg.Submit(), sg.Cancel(),
                           sg.Button('HELP', button_color=(sg.YELLOWS[0], sg.BLUES[0]))]])
@@ -114,36 +115,39 @@ def main():
             else:
                 window_output_active = True
                 command = ['barrnap']
-                command.append(f"{values_input['-INPUT_FILE-']}")
+                command.append(values_input['-INPUT_FILE-'])
                 for option in options_dic:
                     command.append(f"--{option.lower()}")
                     command.append(f"{values_input[f'-{option.upper()}-']}")
+                    command.extend(['--outseq', values_input['-OUTPUT_FASTA_FILE-']])
                 arg_list = command
                 command = ' '.join(command)
 
                 window_input['-OUTPUT-'].update(command)
 
                 stream = subprocess.Popen(arg_list, stdout=subprocess.PIPE, encoding='utf-8')
-                out = stream.stdout.read()
+                output_gff = stream.stdout.read()
 
-                layout_output = [[(sg.Text('Barrnap output', size=[40, 1]))],
-                                [sg.Multiline(out, size=(80, 20))],
-                                [sg.Text('Output file path', size=(20,1)), sg.InputText('result.gff', key='-OUTPUT_FILE-'), sg.FileBrowse(),
-                                sg.Button('SAVE', button_color=(sg.YELLOWS[0], sg.BLUES[0])),
-                                sg.Button('EXIT', button_color=(sg.YELLOWS[0], sg.GREENS[0]))]]
+                with open(values_input['-OUTPUT_FASTA_FILE-']) as output_fasta_file:
+                    output_fasta = output_fasta_file.read()
+                    layout_output = [[(sg.Text('Barrnap output', size=[40, 1]))],
+                                    [sg.Multiline(output_fasta, size=(80, 20))],
+                                    [sg.Text('Output file path', size=(20,1)), sg.InputText('result.gff', key='-OUTPUT_GFF_FILE-'), sg.FileBrowse(),
+                                    sg.Button('SAVE', button_color=(sg.YELLOWS[0], sg.BLUES[0])),
+                                    sg.Button('EXIT', button_color=(sg.YELLOWS[0], sg.GREENS[0]))]]
 
-                window_output = sg.Window('GUI barrnap application results', layout_output, default_element_size=(30, 2))
+                    window_output = sg.Window('GUI barrnap application results', layout_output, default_element_size=(30, 2))
 
-                while window_output_active:
-                    event_output, values_output  = window_output.read()
-                    if event_output == 'SAVE':
-                        with open(f"{values_output['-OUTPUT_FILE-']}", 'w') as outfile:
-                            outfile.write(out)
-                    elif event_output in {sg.WIN_CLOSED, 'EXIT'}:
-                        window_output_active = False
-                        break
-                window_output.close()
-                del window_output
+                    while window_output_active:
+                        event_output, values_output = window_output.read()
+                        if event_output == 'SAVE':
+                            with open(f"{values_output['-OUTPUT_GFF_FILE-']}", 'w') as outfile:
+                                outfile.write(out)
+                        elif event_output in {sg.WIN_CLOSED, 'EXIT'}:
+                            window_output_active = False
+                            break
+                    window_output.close()
+                    del window_output
 
     window_input.close()
     del window_input
