@@ -1,5 +1,6 @@
 import subprocess
 import os.path
+import time
 
 ROW_SIZE = (15, 1)
 
@@ -16,6 +17,15 @@ except ImportError:
 finally:
     import PySimpleGUI as sg
 
+try:
+    from loguru import logger
+except ModuleNotFoundError:
+    subprocess.call(['pip3', 'install', 'loguru'])
+finally:
+    from loguru import logger
+
+logger.add("file_barrnap_{time}.log", format="{time:YYYY-MM-DD at HH:mm:ss} | {level} | {message}")
+logger.info("All the packages are installed")
 
 try:
     barrnap_app = subprocess.Popen(['barrnap', '-h'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='utf-8')
@@ -25,6 +35,7 @@ except FileNotFoundError:
     output = subprocess.check_output(('conda', 'install', '-c', 'bioconda', '-c', 'conda-forge', 'barrnap'), stdin=ps.stdout)
     ps.wait()
 
+logger.info("Barrnap is checked")
 
 def add_option(option, default=None, size=ROW_SIZE):
     return [sg.Text(option, size=size), sg.InputText(default, key=f'-{option.upper()}-')]
@@ -123,8 +134,15 @@ def main():
 
                 window_input['-OUTPUT-'].update(command)
 
+                logger.info(f"Input file that will be used: {values_input['-INPUT_FILE-']}")
+                logger.info(f"Barrnap was called with the following arguments:\n {command}")
+
+                start_time = time.time()
                 stream = subprocess.Popen(arg_list, stdout=subprocess.PIPE, encoding='utf-8')
                 out = stream.stdout.read()
+                end_time = time.time()
+                elapsed_time = end_time - start_time
+                logger.info("Elapsed time:  %s seconds" %elapsed_time)
 
                 layout_output = [[(sg.Text('Barrnap output', size=[40, 1]))],
                                 [sg.Multiline(out, size=(80, 20))],
@@ -139,12 +157,15 @@ def main():
                     if event_output == 'SAVE':
                         with open(f"{values_output['-OUTPUT_FILE-']}", 'w') as outfile:
                             outfile.write(out)
+                        logger.info(f"Results were saved to {values_output['-OUTPUT_FILE-']}")
                     elif event_output in {sg.WIN_CLOSED, 'EXIT'}:
                         window_output_active = False
                         break
                 window_output.close()
                 del window_output
-
+    logger.info("Work finished")
+    help = show_help_page()
+    logger.info(help.split('If you use Barrnap in your work, please cite:')[1])
     window_input.close()
     del window_input
 
