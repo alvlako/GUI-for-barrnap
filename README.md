@@ -10,7 +10,7 @@ Our graphical interface allows to predict ribosomal RNAs through barrnap even fo
 
 ![image](https://user-images.githubusercontent.com/56854264/167154394-d65e3c21-abfe-4f73-80ae-fbb34575f697.png)
 ![image](https://user-images.githubusercontent.com/56854264/167154476-a7575769-f27f-4a6b-a743-796ce24a1a05.png)
-![image](https://user-images.githubusercontent.com/56854264/167154518-40594e79-ff35-4b18-b134-171f42c52810.png)
+![image](https://user-images.githubusercontent.com/56854264/167154802-ed2584ac-e3bb-43b9-ba3b-618cd842e1ab.png)
 
 
 ## Contributors
