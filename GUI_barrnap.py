@@ -2,6 +2,7 @@ import subprocess
 import os.path
 from pathlib import Path
 from datetime import datetime
+from datetime import timedelta
 import time
 
 
@@ -37,8 +38,9 @@ def run_barrnap(arg_list):
     out, err = stream.communicate()
     end_time = time.time()
     elapsed_time = end_time - start_time
+    elapsed_time_formatted = str(timedelta(seconds=elapsed_time))
     logger.info(f"{err}")
-    logger.info("Elapsed time:  %s seconds" % elapsed_time)
+    logger.info(f"Elapsed time (h:mm:ss): {elapsed_time_formatted}")
     logger.info("Work finished")
     return output_gff
 
@@ -192,7 +194,7 @@ def main():
 
     make_input_window()
 
-    logger.info("Barrnap has successfully completed its work. Have a nice day!")
+    logger.info("Application has completed its work. Have a nice day!")
 
 
 if __name__ == "__main__":
