@@ -6,17 +6,26 @@ from datetime import timedelta
 import time
 
 
+FONT_STYLE = 'Arial 20'
+FONT_STYLE_HEADER = 'Arial 25 bold'
+
+
+
 def install(package):
     subprocess.call(['pip', 'install', package])
     print('Required packages are installed')
 
 
-def add_option(option, default=None, size=(15, 1)):
-    return [sg.Text(option, size=size), sg.InputText(default, key=f'-{option.upper()}-')]
+def add_option(option, default=None, size=(30, 1)):
+    # FONT_STYLE = 'Arial 20'
+    return [sg.Text(option, size=size, font=FONT_STYLE), sg.InputText(default, key=f'-{option.upper()}-',
+                                                                      font=FONT_STYLE)]
 
 
-def add_file(text, file_path=None, key=None, size=(15, 1)):
-    return [sg.Text(text, size=size), sg.InputText(file_path, key=key), sg.FileBrowse()]
+def add_file(text, file_path=None, key=None, size=(30, 1)):
+    # FONT_STYLE = 'Arial 20'
+    return [sg.Text(text, size=size, font=FONT_STYLE), sg.InputText(file_path, key=key, font=FONT_STYLE),
+                                                       sg.FileBrowse()]
 
 
 def make_command_for_barrnap(values_input, options_dic):
@@ -78,13 +87,17 @@ def show_help_page():
 
 
 def make_input_window():
+    # FONT_STYLE = 'Arial 20'
+    # FONT_STYLE_HEADER = 'Arial 25 bold'
+
     options_dic = {'Kingdom': 'bac', 'Threads': '1', 'Lencutoff': '0.8', 'Reject': '0.25', 'Evalue': '1e-06'}
 
-    layout_input = [[sg.Text('Welcome to barrnap')],
+    layout_input = [[sg.Text('Welcome to barrnap!', font=FONT_STYLE_HEADER)],
                     add_file('Input file path', 'sequence.fasta', '-INPUT_FILE-'),
                     add_file('Output FASTA file path', 'rRNA.fasta', '-OUTPUT_FASTA_FILE-')]
     layout_input.extend([add_option(*option) for option in options_dic.items()])
-    layout_input.extend([[sg.Text('Typed command', size=(15, 1)), sg.InputText(key='-OUTPUT-')],
+    layout_input.extend([[sg.Text('Typed command', size=(30, 1), font=FONT_STYLE), sg.InputText(key='-OUTPUT-',
+                                                                                                font=FONT_STYLE)],
                          [sg.Submit(), sg.Cancel(),
                           sg.Button('HELP', button_color=(sg.YELLOWS[0], sg.BLUES[0]))]])
 
@@ -124,11 +137,13 @@ def make_input_window():
 
 
 def make_help_window():
+    # FONT_STYLE = 'Arial 20'
+    # FONT_STYLE_HEADER = 'Arial 25 bold'
     help_page = show_help_page()
-    layout_help = [[(sg.Text('Barrnap help page', size=[40, 1]))],
-                   [sg.Multiline(help_page, size=(80, 20))],
-                   [sg.Text('Output file path', size=(20, 1)),
-                    sg.InputText('barrnap_help.txt', key='-HELP_PAGE-'), sg.FileBrowse(),
+    layout_help = [[(sg.Text('Barrnap help page', size=[40, 1], font=FONT_STYLE_HEADER))],
+                   [sg.Multiline(help_page, size=(80, 20), font=FONT_STYLE)],
+                   [sg.Text('Output file path', size=(20, 1), font=FONT_STYLE),
+                    sg.InputText('barrnap_help.txt', key='-HELP_PAGE-', font=FONT_STYLE), sg.FileBrowse(),
                     sg.Button('SAVE', button_color=(sg.YELLOWS[0], sg.BLUES[0])),
                     sg.Button('EXIT', button_color=(sg.YELLOWS[0], sg.GREENS[0]))]]
 
@@ -146,13 +161,15 @@ def make_help_window():
 
 
 def make_output_window(log_file, output_gff):
+    # FONT_STYLE = 'Arial 20'
+    # FONT_STYLE_HEADER = 'Arial 25 bold'
     log_file_name = log_file._core.handlers[1]._sink._file.name
     with open(log_file_name) as output_log_file:
         output_log = output_log_file.read()
-        layout_output = [[(sg.Text('Barrnap output', size=[40, 1]))],
-                         [sg.Multiline(output_log, size=(80, 20))],
-                         [sg.Text('Output GFF file', size=(20, 1)),
-                          sg.InputText('result.gff', key='-OUTPUT_GFF_FILE-'), sg.FileBrowse(),
+        layout_output = [[(sg.Text('Barrnap output', size=[40, 1], font=FONT_STYLE_HEADER))],
+                         [sg.Multiline(output_log, size=(80, 20), font=FONT_STYLE)],
+                         [sg.Text('Output GFF file', size=(20, 1), font=FONT_STYLE),
+                          sg.InputText('result.gff', key='-OUTPUT_GFF_FILE-', font=FONT_STYLE), sg.FileBrowse(),
                           sg.Button('SAVE', button_color=(sg.YELLOWS[0], sg.BLUES[0])),
                           sg.Button('EXIT', button_color=(sg.YELLOWS[0], sg.GREENS[0]))]]
 
