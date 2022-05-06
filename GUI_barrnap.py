@@ -71,7 +71,7 @@ def show_help_page():
     Graphical user interface (GUI) for Barrnap was created as Bioinformatics Institute student project
     https://github.com/alvlako/GUI-for-barrnap
 
-    Thank you and wellcome to Barrnap GUI!.
+    Thank you and wellcome to Barrnap GUI!
     '''
     return help_message
 
@@ -133,7 +133,9 @@ def main():
                 command = ' '.join(command)
 
                 window_input['-OUTPUT-'].update(command)
-
+                
+                working_directory = os. getcwd()
+                logger.info(f"Working directory: {working_directory}")
                 logger.info(f"Input file that will be used: {values_input['-INPUT_FILE-']}")
                 logger.info(f"Barrnap was called with the following arguments:\n {command}")
 
