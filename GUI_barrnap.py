@@ -176,7 +176,7 @@ def main():
     now = datetime.now()
     barrnap_logs_dir_name = f"./barrnap_logs/{now.strftime('%Y-%m-%d')}/"
     Path(barrnap_logs_dir_name).mkdir(parents=True, exist_ok=True)
-    logger.add(barrnap_logs_dir_name + "barrnap_log_file_{time}.log", format="{time:YYYY-MM-DD at HH:mm:ss} |"
+    logger.add(barrnap_logs_dir_name + "barrnap_log_file_{time:YYYY-MM-DD_HH-mm-ss}.log", format="{time:YYYY-MM-DD at HH:mm:ss} |"
                                                                              " {level} | {message}")
     logger.info("All the packages are installed")
 
