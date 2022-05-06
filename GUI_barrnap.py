@@ -140,10 +140,13 @@ def main():
                 logger.info(f"Barrnap was called with the following arguments:\n {command}")
 
                 start_time = time.time()
-                stream = subprocess.Popen(arg_list, stdout=subprocess.PIPE, encoding='utf-8')
-                out = stream.stdout.read()
+                stream = subprocess.Popen(arg_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='utf-8')
+                #out = stream.stdout.read()
+                # we need err because it had barrnap log 
+                out, err = stream.communicate()
                 end_time = time.time()
                 elapsed_time = end_time - start_time
+                logger.info(f"{err}")
                 logger.info("Elapsed time:  %s seconds" %elapsed_time)
 
                 layout_output = [[(sg.Text('Barrnap output', size=[40, 1]))],
