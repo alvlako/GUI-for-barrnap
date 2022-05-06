@@ -10,11 +10,11 @@ def install(package):
     print('Required packages are installed')
 
 
-def add_option(option, default=None, size=(60, 1)):
+def add_option(option, default=None, size=(15, 1)):
     return [sg.Text(option, size=size), sg.InputText(default, key=f'-{option.upper()}-')]
 
 
-def add_file(text, file_path=None, key=None, size=(60, 1)):
+def add_file(text, file_path=None, key=None, size=(15, 1)):
     return [sg.Text(text, size=size), sg.InputText(file_path, key=key), sg.FileBrowse()]
 
 
@@ -78,11 +78,11 @@ def show_help_page():
 def make_input_window():
     options_dic = {'Kingdom': 'bac', 'Threads': '1', 'Lencutoff': '0.8', 'Reject': '0.25', 'Evalue': '1e-06'}
 
-    layout_input = [[sg.Text('Welcome to barrnap', font='Courier 400 italic bold underline overstrike')],
+    layout_input = [[sg.Text('Welcome to barrnap')],
                     add_file('Input file path', 'sequence.fasta', '-INPUT_FILE-'),
                     add_file('Output FASTA file path', 'rRNA.fasta', '-OUTPUT_FASTA_FILE-')]
     layout_input.extend([add_option(*option) for option in options_dic.items()])
-    layout_input.extend([[sg.Text('Typed command', size=(60, 1)), sg.InputText(key='-OUTPUT-')],
+    layout_input.extend([[sg.Text('Typed command', size=(15, 1)), sg.InputText(key='-OUTPUT-')],
                          [sg.Submit(), sg.Cancel(),
                           sg.Button('HELP', button_color=(sg.YELLOWS[0], sg.BLUES[0]))]])
 
