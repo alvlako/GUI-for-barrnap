@@ -10,7 +10,6 @@ FONT_STYLE = 'Arial 20'
 FONT_STYLE_HEADER = 'Arial 25 bold'
 
 
-
 def install(package):
     subprocess.call(['pip', 'install', package])
     print('Required packages are installed')
@@ -25,7 +24,7 @@ def add_option(option, default=None, size=(30, 1)):
 def add_file(text, file_path=None, key=None, size=(30, 1)):
     # FONT_STYLE = 'Arial 20'
     return [sg.Text(text, size=size, font=FONT_STYLE), sg.InputText(file_path, key=key, font=FONT_STYLE),
-                                                       sg.FileBrowse()]
+            sg.FileBrowse()]
 
 
 def make_command_for_barrnap(values_input, options_dic):
@@ -193,8 +192,8 @@ def main():
     now = datetime.now()
     barrnap_logs_dir_name = f"./barrnap_logs/{now.strftime('%Y-%m-%d')}/"
     Path(barrnap_logs_dir_name).mkdir(parents=True, exist_ok=True)
-    logger.add(barrnap_logs_dir_name + "barrnap_log_file_{time:YYYY-MM-DD_HH-mm-ss}.log", format="{time:YYYY-MM-DD at HH:mm:ss} |"
-                                                                             " {level} | {message}")
+    logger.add(barrnap_logs_dir_name + "barrnap_log_file_{time:YYYY-MM-DD_HH-mm-ss}.log",
+               format="{time:YYYY-MM-DD at HH:mm:ss} | {level} | {message}")
     logger.info("All the packages are installed")
 
     try:
