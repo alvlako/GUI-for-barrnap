@@ -1,5 +1,7 @@
 import subprocess
 import os.path
+from pathlib import Path
+from datetime import datetime
 import time
 
 ROW_SIZE = (60, 1)
@@ -8,35 +10,6 @@ ROW_SIZE = (60, 1)
 def install(package):
     subprocess.call(['pip', 'install', package])
     print('Required packages are installed')
-
-
-try:
-    import PySimpleGUI as sg
-except ImportError:
-    install('pysimplegui')
-finally:
-    import PySimpleGUI as sg
-
-try:
-    from loguru import logger
-except ModuleNotFoundError:
-    subprocess.call(['pip3', 'install', 'loguru'])
-finally:
-    from loguru import logger
-
-logger.add("file_barrnap_{time}.log", format="{time:YYYY-MM-DD at HH:mm:ss} | {level} | {message}")
-logger.info("All the packages are installed")
-
-try:
-    barrnap_app = subprocess.Popen(['barrnap', '-h'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='utf-8')
-except FileNotFoundError:
-    # subprocess.call(['yes','|','conda', 'install', '-c', 'bioconda', '-c', 'conda-forge', 'phispy'])
-    ps = subprocess.Popen(('yes'), stdout=subprocess.PIPE)
-    output = subprocess.check_output(('conda', 'install', '-c', 'bioconda', '-c', 'conda-forge', 'barrnap'),
-                                     stdin=ps.stdout)
-    ps.wait()
-
-logger.info("Barrnap is checked")
 
 
 def add_option(option, default=None, size=ROW_SIZE):
@@ -74,7 +47,7 @@ def show_help_page():
     Graphical user interface (GUI) for Barrnap was created as Bioinformatics Institute student project
     https://github.com/alvlako/GUI-for-barrnap
 
-    Thank you and wellcome to Barrnap GUI!.
+    Thank you and wellcome to Barrnap GUI!
     '''
     return help_message
 
@@ -142,21 +115,29 @@ def main():
 
                 window_input['-OUTPUT-'].update(command)
 
+                working_directory = os. getcwd()
+                logger.info(f"Working directory: {working_directory}")
                 logger.info(f"Input file that will be used: {values_input['-INPUT_FILE-']}")
                 logger.info(f"Barrnap was called with the following arguments:\n {command}")
 
                 start_time = time.time()
-                stream = subprocess.Popen(arg_list, stdout=subprocess.PIPE, encoding='utf-8')
+                stream = subprocess.Popen(arg_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='utf-8')
                 output_gff = stream.stdout.read()
+                # we need err because it had barrnap log
+                out, err = stream.communicate()
                 end_time = time.time()
                 elapsed_time = end_time - start_time
-                logger.info("Elapsed time: %s seconds" % elapsed_time)
+                logger.info(f"{err}")
+                logger.info("Elapsed time:  %s seconds" % elapsed_time)
+                logger.info("Work finished")
+                help = show_help_page()
+                logger.info(help.split('If you use Barrnap in your work, please cite:')[1])
 
-                with open(values_input['-OUTPUT_FASTA_FILE-']) as output_fasta_file:
-                    output_fasta = output_fasta_file.read()
+                with open(logger._core.handlers[1]._sink._file.name) as output_log_file:
+                    output_log = output_log_file.read()
                     layout_output = [[(sg.Text('Barrnap output', size=[40, 1]))],
-                                     [sg.Multiline(output_fasta, size=(80, 20))],
-                                     [sg.Text('Output file path', size=(20, 1)),
+                                     [sg.Multiline(output_log, size=(80, 20))],
+                                     [sg.Text('Output GFF file', size=(20, 1)),
                                       sg.InputText('result.gff', key='-OUTPUT_GFF_FILE-'), sg.FileBrowse(),
                                       sg.Button('SAVE', button_color=(sg.YELLOWS[0], sg.BLUES[0])),
                                       sg.Button('EXIT', button_color=(sg.YELLOWS[0], sg.GREENS[0]))]]
@@ -175,12 +156,42 @@ def main():
                     window_output.close()
                     del window_output
 
-    logger.info("Work finished")
-    help = show_help_page()
-    logger.info(help.split('If you use Barrnap in your work, please cite:')[1])
     window_input.close()
     del window_input
 
 
 if __name__ == "__main__":
+    try:
+        import PySimpleGUI as sg
+    except ImportError:
+        install('pysimplegui')
+    finally:
+        import PySimpleGUI as sg
+
+    try:
+        from loguru import logger
+    except ModuleNotFoundError:
+        subprocess.call(['pip3', 'install', 'loguru'])
+    finally:
+        from loguru import logger
+
+    now = datetime.now()
+    barrnap_logs_dir_name = f"./barrnap_logs/{now.strftime('%Y-%m-%d')}/"
+    Path(barrnap_logs_dir_name).mkdir(parents=True, exist_ok=True)
+
+    logger.add(barrnap_logs_dir_name + "barrnap_log_file_{time}.log", format="{time:YYYY-MM-DD at HH:mm:ss} |"
+                                                                             " {level} | {message}")
+    logger.info("All the packages are installed")
+
+    try:
+        barrnap_app = subprocess.Popen(['barrnap', '-h'], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                       encoding='utf-8')
+    except FileNotFoundError:
+        # subprocess.call(['yes','|','conda', 'install', '-c', 'bioconda', '-c', 'conda-forge', 'phispy'])
+        ps = subprocess.Popen(('yes'), stdout=subprocess.PIPE)
+        output = subprocess.check_output(('conda', 'install', '-c', 'bioconda', '-c', 'conda-forge', 'barrnap'),
+                                         stdin=ps.stdout)
+        ps.wait()
+
+    logger.info("Barrnap is checked")
     main()
