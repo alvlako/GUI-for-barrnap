@@ -6,6 +6,13 @@ The goal of the project was to produce a simple graphical interface for any comm
 
 Our graphical interface allows to predict ribosomal RNAs through barrnap even for the people who are not familiar with the command line: chose file from files browser, run the script by pressing 'submit buttons', etc. One of the problems of using GUIs is that it's hard to reproduce; for this purpose, we added detailed log files that are written automatically in the `barrnap_logs` folder and contain not only barrnap native log, but also the working directory and time of running the script. To allow the user to blast the hits immidiately, we added the output in fasta format.
 
+## Available 
+
+![image](https://user-images.githubusercontent.com/56854264/167154394-d65e3c21-abfe-4f73-80ae-fbb34575f697.png)
+![image](https://user-images.githubusercontent.com/56854264/167154476-a7575769-f27f-4a6b-a743-796ce24a1a05.png)
+![image](https://user-images.githubusercontent.com/56854264/167154518-40594e79-ff35-4b18-b134-171f42c52810.png)
+
+
 ## Contributors
 
 - Mikhail Fofanov [@MVFofanov](https://github.com/MVFofanov)
