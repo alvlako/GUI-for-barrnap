@@ -36,9 +36,9 @@ The script should install all the libraries and barrnap program automatically. H
 
 `conda install -c bioconda -c conda-forge barrnap`
 
-`pip3 install loguru`
+`conda install -c bioconda -c conda-forge loguru`
 
-`pip3 install pysimplegui`
+`conda install -c bioconda -c conda-forge pysimplegui`
 
 ### Downloading 
 
@@ -54,9 +54,15 @@ You can also download `.zip` archive from our github by pressing 'Code' > 'Downl
 
 ### Installing 
 
-#### Mac and Linux 
+#### Mac
 
-To install on Mac or Linux, simply run the '.exe' file. It should install all the dependencies automatically. 
+To install on Mac simply download and run the executable file by clicking on the icon. It should install all the dependencies automatically. Also you can run the python script via command line. Do not forget that you have to run it in conda environment.
+
+`python3 barrnap_gui.py`
+
+#### Linux
+
+Unfortunately, the proper executable file is still not available for Linux. You should download python script (.py) and either run it by clicking on the icon or via command line as described in Mac section.
 
 #### Windows 
 
