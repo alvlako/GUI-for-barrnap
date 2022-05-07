@@ -11,7 +11,7 @@ FONT_STYLE_HEADER = 'Arial 25 bold'
 
 
 def install(package):
-    subprocess.call(['pip', 'install', package])
+    subprocess.call(['conda', 'install', '-c', 'bioconda', '-c', 'conda-forge', package])
     print('Required packages are installed')
 
 
@@ -200,7 +200,6 @@ def main():
         barrnap_app = subprocess.Popen(['barrnap', '-h'], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                        encoding='utf-8')
     except FileNotFoundError:
-        # subprocess.call(['yes','|','conda', 'install', '-c', 'bioconda', '-c', 'conda-forge', 'phispy'])
         ps = subprocess.Popen('yes', stdout=subprocess.PIPE)
         output = subprocess.check_output(('conda', 'install', '-c', 'bioconda', '-c', 'conda-forge', 'barrnap'),
                                          stdin=ps.stdout)
@@ -224,7 +223,7 @@ if __name__ == "__main__":
     try:
         from loguru import logger
     except ModuleNotFoundError:
-        subprocess.call(['pip3', 'install', 'loguru'])
+        install('loguru')
     finally:
         from loguru import logger
 
