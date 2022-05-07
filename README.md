@@ -60,7 +60,7 @@ To install on Mac or Linux, simply run the '.exe' file. It should install all th
 
 #### Windows 
 
-We do not recommend using barrnap_GUI on Windows. If, however, you have an unbearable, pressing desire to use barrnap_GUI on Windows, you may try the following: 
+We do not recommend using GUI-for-barrnap on Windows. If, however, you have an unbearable, pressing desire to use GUI-for-barrnap on Windows, you may try the following: 
 
 Install Windows Subsystem for Linux. 
 
