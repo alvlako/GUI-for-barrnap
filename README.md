@@ -1,8 +1,10 @@
 # GUI-for-barrnap
 
-This GUI for [barrnap program](https://github.com/tseemann/barrnap), BAsic Rapid Ribosomal RNA Predictor, was created as python project for the python course in [Bioinnformatics Institute](https://bioinf.me/en) 2021-2022. 
+This graphical  user interface (GUI) for [barrnap program](https://github.com/tseemann/barrnap), BAsic Rapid Ribosomal RNA Predictor, was created as python project for the python course in [Bioinnformatics Institute](https://bioinf.me/en) 2021-2022. 
 
 The goal of the project was to produce a simple graphical interface for any command-line bioinformatical tool. We chose to work with barrnap, because it has a limited amount of options, it can be run on a small data on a normal laptop (unlike e.g. genome assembler) and its output is a simple text (gff) file. 
+
+We used the [PySimpleGUI library](https://pysimplegui.readthedocs.io/en/latest/) to create the GUI. 
 
 ### Why use barrnap GUI? 
 
@@ -58,7 +60,7 @@ To install on Mac or Linux, simply run the '.exe' file. It should install all th
 
 #### Windows 
 
-We do not recommend using barrnap_GUI on Windows. If, however, you have an unbearable, pressing desire to use barrnap_GUI on Wondows, you may try the following: 
+We do not recommend using barrnap_GUI on Windows. If, however, you have an unbearable, pressing desire to use barrnap_GUI on Windows, you may try the following: 
 
 Install Windows Subsystem for Linux. 
 
@@ -100,7 +102,7 @@ Open new wsl window, go to the directory with GUI_barrnap_log.py, make sure you 
 Run:
 
 ```
-python UI_barrnap_log.py
+python GUI_barrnap_log.py
 ```
 Inside the XLaunch Desctop, you should see the window with the barrnap options!
 
@@ -189,6 +191,8 @@ If you use Barrnap in your work, please cite:
     Seemann T
     barrnap 0.9 : rapid ribosomal RNA prediction
     https://github.com/tseemann/barrnap
+
+The GUI was created using [PySimpleGUI library.](https://pysimplegui.readthedocs.io/en/latest/) 
 
 The test data (GCF_000005845.2_ASM584v2_genomic.fna) is taken from NCBI database: [Escherichia coli str. K-12 substr. MG1655 (E. coli) reference genome ](https://www.ncbi.nlm.nih.gov/data-hub/genome/GCF_000005845.2/). 
 
